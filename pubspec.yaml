@@ -69,6 +69,8 @@ flutter:
     - assets/images/sign_grow.png
     - assets/images/sign_mygarden.png
     - assets/images/logo 1.png
+    - assets/images/garden_bg.png
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -81,14 +83,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family:
-  #     fonts:
-  #       - asset: 'assets/fonts/Helvetica.ttf'
-  #       - asset: assets/fonts/Helvetica-Bold.ttf
-  #         weight: 700
-  #       - asset: assets/fonts/Helvetica-light-587ebe5a59211.ttf
-  #         weight: 300
+  fonts:
+    - family:
+      fonts:
+        - asset: 'assets/fonts/Helvetica.ttf'
+        - asset: assets/fonts/Helvetica-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Helvetica-light-587ebe5a59211.ttf
+          weight: 300
+    - family: Sherry
+      fonts:
+        - asset: 'assets/fonts/Sherry_handwriting-Regular.ttf'
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

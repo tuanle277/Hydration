@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hydration_app/shelves_screen.dart';
+
+import './tree.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,6 +28,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _cupDrunk = 0;
   int treePlanted = 0;
+  int treeGrown = 0;
   String treeAsset = 'assets/images/plant_1.png';
 
   double fromRight = 0.2;
@@ -32,8 +36,15 @@ class _MyHomePageState extends State<MyHomePage> {
   double treeHeight = 0.15;
   double treeWidth = 0.9;
 
+  List divider = [20, 40, 60, 80, 100];
+  List divider10 = [10, 30, 50, 70, 90];
+
   void plantGrow() {
-    if (_cupDrunk == 10) {
+    if (10 <= _cupDrunk && _cupDrunk < 20 ||
+        30 <= _cupDrunk && _cupDrunk < 40 ||
+        50 <= _cupDrunk && _cupDrunk < 60 ||
+        70 <= _cupDrunk && _cupDrunk < 80 ||
+        90 <= _cupDrunk && _cupDrunk < 100) {
       setState(
         () {
           treeAsset = 'assets/images/plant_2.png';
@@ -41,12 +52,28 @@ class _MyHomePageState extends State<MyHomePage> {
           treeHeight = 0.21;
         },
       );
-    } else if (_cupDrunk == 20) {
+    } else if (divider.contains(_cupDrunk)) {
       setState(
         () {
           treeAsset = 'assets/images/plant_3.png';
           fromRight = 0.15;
           treeHeight = 0.25;
+        },
+      );
+    } else {
+      setState(
+        () {
+          treeAsset = 'assets/images/plant_1.png';
+          fromRight = 0.2;
+          treeHeight = 0.15;
+        },
+      );
+    }
+
+    if (divider.contains(_cupDrunk)) {
+      setState(
+        () {
+          treeGrown += 1;
         },
       );
     }
@@ -134,12 +161,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                   width: mediaQuery.size.width * 0.34,
                                 ),
                                 Positioned(
-                                  left: mediaQuery.size.width * 0.23,
+                                  left: mediaQuery.size.width * 0.22,
                                   top: mediaQuery.size.height * 0.04,
                                   child: Text(
                                     '$_cupDrunk',
                                     style: const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 24,
+                                      fontFamily: 'Sherry',
+                                      color: Color(
+                                        0xff944210,
+                                      ),
                                     ),
                                   ),
                                 )
@@ -149,9 +180,21 @@ class _MyHomePageState extends State<MyHomePage> {
                               'assets/images/sign_grow.png',
                               width: mediaQuery.size.width * 0.25,
                             ),
-                            Image.asset(
-                              'assets/images/sign_mygarden.png',
-                              width: mediaQuery.size.width * 0.38,
+                            InkWell(
+                              child: Image.asset(
+                                'assets/images/sign_mygarden.png',
+                                width: mediaQuery.size.width * 0.38,
+                              ),
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ShelvesScreen(
+                                    treePlanted,
+                                    _cupDrunk,
+                                    treeGrown,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
