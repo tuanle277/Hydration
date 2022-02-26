@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:hydration_app/shelves_screen.dart';
 
-import './tree.dart';
-
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +17,21 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.black,
       ),
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: FutureBuilder(
+        future: _fbApp,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print('You have an error! ${snapshot.error.toString()}');
+            return const Text("There is an error");
+          } else if (snapshot.hasData) {
+            return const MyHomePage();
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -27,8 +45,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _cupDrunk = 0;
-  int treePlanted = 0;
-  int treeGrown = 0;
+  int flowerPlanted = 0;
+  int flowerGrown = 0;
   String treeAsset = 'assets/images/plant_1.png';
 
   double fromRight = 0.2;
@@ -58,6 +76,21 @@ class _MyHomePageState extends State<MyHomePage> {
           treeAsset = 'assets/images/plant_3.png';
           fromRight = 0.15;
           treeHeight = 0.25;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.white,
+              content: Text(
+                "Congrats, you have grown a flower!",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Sherry',
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
         },
       );
     } else {
@@ -73,10 +106,54 @@ class _MyHomePageState extends State<MyHomePage> {
     if (divider.contains(_cupDrunk)) {
       setState(
         () {
-          treeGrown += 1;
+          flowerGrown += 1;
         },
       );
     }
+  }
+
+  void flowerStates() {
+    if (10 <= _cupDrunk && _cupDrunk < 20 ||
+        30 <= _cupDrunk && _cupDrunk < 40 ||
+        50 <= _cupDrunk && _cupDrunk < 60 ||
+        70 <= _cupDrunk && _cupDrunk < 80 ||
+        90 <= _cupDrunk && _cupDrunk < 100) {
+      setState(
+        () {
+          print("initialized");
+
+          treeAsset = 'assets/images/plant_2.png';
+          fromRight = 0.14;
+          treeHeight = 0.21;
+        },
+      );
+    } else if (divider.contains(_cupDrunk)) {
+      print("initialized");
+      setState(
+        () {
+          treeAsset = 'assets/images/plant_3.png';
+          fromRight = 0.15;
+          treeHeight = 0.25;
+        },
+      );
+    } else {
+      setState(
+        () {
+          print("initialized");
+
+          treeAsset = 'assets/images/plant_1.png';
+          fromRight = 0.2;
+          treeHeight = 0.15;
+        },
+      );
+    }
+  }
+
+  @override
+  initState() {
+    print("init");
+    flowerStates();
+    super.initState();
   }
 
   void drink() {
@@ -86,6 +163,20 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
     plantGrow();
+  }
+
+  void _resetApp() {
+    print("did to");
+    setState(
+      () {
+        _cupDrunk = 0;
+        flowerPlanted = 0;
+        flowerGrown = 0;
+        treeAsset = 'assets/images/plant_1.png';
+        fromRight = 0.2;
+        treeHeight = 0.15;
+      },
+    );
   }
 
   @override
@@ -130,21 +221,41 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: mediaQuery.size.width,
                           height: mediaQuery.size.height * 0.15),
-                      // Positioned.fill(
-                      //   child: Align(
-                      //     alignment: Alignment.center,
-                      //     child: Padding(
-                      //       padding: EdgeInsets.only(
-                      //         left: 15,
-                      //         top: 10,
-                      //       ),
-                      //       child: Image.asset(
-                      //         'assets/images/logo 1.png',
-                      //         height: mediaQuery.size.height * 0.08,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      GestureDetector(
+                        onTap: () => _resetApp(),
+                        child: const Positioned.fill(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                top: 10,
+                              ),
+                              child: Text(
+                                "reset",
+                                style: TextStyle(
+                                  fontFamily: 'Sherry',
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: Image.asset(
+                              'assets/images/logo 1.png',
+                              height: mediaQuery.size.height * 0.08,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   Stack(
@@ -189,9 +300,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ShelvesScreen(
-                                    treePlanted,
+                                    flowerPlanted,
                                     _cupDrunk,
-                                    treeGrown,
+                                    flowerGrown,
                                   ),
                                 ),
                               ),

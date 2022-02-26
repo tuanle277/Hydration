@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ShelvesScreen extends StatefulWidget {
-  int treePlanted;
-  int cupDrunk;
-  int flowerGrown;
+  final int treePlanted;
+  final int cupDrunk;
+  final int flowerGrown;
 
-  ShelvesScreen(this.treePlanted, this.cupDrunk, this.flowerGrown);
+  const ShelvesScreen(this.treePlanted, this.cupDrunk, this.flowerGrown);
 
   @override
   _ShelvesScreenState createState() => _ShelvesScreenState();
@@ -144,6 +144,21 @@ class _ShelvesScreenState extends State<ShelvesScreen> {
                           ),
                           width: mediaQuery.size.width,
                           height: mediaQuery.size.height * 0.15),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 15,
+                              top: 10,
+                            ),
+                            child: Image.asset(
+                              'assets/images/logo 1.png',
+                              height: mediaQuery.size.height * 0.08,
+                            ),
+                          ),
+                        ),
+                      ),
                       // Positioned.fill(
                       //   child: Align(
                       //     alignment: Alignment.center,
@@ -223,7 +238,7 @@ class _ShelvesScreenState extends State<ShelvesScreen> {
               bottom: 0,
               child: Align(
                 alignment: Alignment.center,
-                child: Container(
+                child: SizedBox(
                   height: mediaQuery.size.height * 0.8,
                   width: mediaQuery.size.width,
                   child: Stack(children: <Widget>[
